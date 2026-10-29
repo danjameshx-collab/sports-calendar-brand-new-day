@@ -14,16 +14,16 @@
     --text: #e9edf5;
     --muted: #8a93a6;
     --border: #232a3b;
-    --nfl: #f0656f;
-    --nba: #f5a35c;
-    --boxing: #e6c15a;
-    --ufc: #e874a8;
-    --ipl: #a990f5;
-    --athletics: #6cb2f5;
-    --international: #8d97f2;
-    --tag-cricket: #45c9a8;
-    --tag-football: #6bd696;
-    --tag-rugby: #d9966a;
+    --nfl: #f4877f;
+    --nba: #f7b36b;
+    --boxing: #f0d070;
+    --ufc: #f29cc8;
+    --ipl: #b8a2f6;
+    --athletics: #c6e37d;
+    --international: #9aa3f2;
+    --tag-cricket: #5fd0c4;
+    --tag-football: #8ddc8f;
+    --tag-rugby: #8cc4ff;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -86,18 +86,14 @@
     padding: 18px 22px;
     font-weight: 700;
     font-size: 1.2rem;
-    color: var(--text);
-    background: linear-gradient(90deg, color-mix(in srgb, var(--c) 22%, var(--panel)) 0%, var(--panel) 75%);
-    border-bottom: 1px solid color-mix(in srgb, var(--c) 30%, var(--border));
-    box-shadow: inset 4px 0 0 var(--c);
+    color: #0b0e14;
+    background: var(--c);
   }
   .sport-header .badge {
     font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: var(--c);
-    background: color-mix(in srgb, var(--c) 14%, transparent);
-    border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
+    background: rgba(11,14,20,0.14);
     padding: 4px 11px;
     border-radius: 20px;
     margin-left: auto;
@@ -163,10 +159,9 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--c);
-    background: color-mix(in srgb, var(--c) 14%, transparent);
-    border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
-    padding: 3px 10px;
+    color: #0b0e14;
+    background: var(--c);
+    padding: 4px 10px;
     border-radius: 20px;
     margin-bottom: 1px;
   }
@@ -367,10 +362,9 @@
   }
   .cal-event-pill {
     border-radius: 6px;
-    padding: 4px 6px 4px 8px;
-    color: var(--text);
-    background: color-mix(in srgb, var(--c) 13%, var(--panel-2));
-    box-shadow: inset 3px 0 0 var(--c);
+    padding: 4px 6px;
+    color: #0b0e14;
+    background: var(--c);
     font-weight: 600;
     line-height: 1.25;
     flex-shrink: 0;
@@ -384,7 +378,6 @@
     font-weight: 600;
   }
   .cal-event-pill .pill-sport {
-    color: var(--c);
     font-weight: 800;
     text-transform: uppercase;
     font-size: 0.62rem;
@@ -396,7 +389,7 @@
     margin-top: 2px;
     font-size: 0.62rem;
     font-weight: 500;
-    color: var(--muted);
+    opacity: 0.8;
   }
   .cal-more {
     font-size: 0.72rem;
@@ -538,10 +531,9 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--c);
-    background: color-mix(in srgb, var(--c) 14%, transparent);
-    border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
-    padding: 2px 9px;
+    color: #0b0e14;
+    background: var(--c);
+    padding: 3px 9px;
     border-radius: 20px;
   }
   .day-modal-event { box-shadow: inset 3px 0 0 var(--c, transparent); }
@@ -618,75 +610,79 @@
     display: flex;
     align-items: baseline;
     gap: 12px;
-    padding: 16px 22px;
+    padding: 18px 24px;
     font-weight: 700;
-    font-size: 1.15rem;
-    color: var(--text);
-    background: linear-gradient(90deg, color-mix(in srgb, var(--c) 22%, var(--panel)) 0%, var(--panel) 75%);
-    border-bottom: 1px solid color-mix(in srgb, var(--c) 30%, var(--border));
-    box-shadow: inset 4px 0 0 var(--c);
+    font-size: 1.2rem;
+    color: #0b0e14;
+    background: var(--c);
   }
-  .standings-head .sub { font-size: 0.75rem; font-weight: 600; color: var(--c); margin-left: auto; }
-  .standings-conf h4 { color: var(--text); }
-  .standings-table caption { color: var(--c, var(--muted)); }
+  .standings-head .sub { font-size: 0.78rem; font-weight: 600; opacity: 0.7; margin-left: auto; }
   .standings-confs {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-    padding: 16px 18px 20px;
+    gap: 32px;
+    padding: 24px 26px 8px;
   }
   .standings-conf h4 {
-    margin: 0 0 10px;
-    font-size: 1.05rem;
-    letter-spacing: 0.3px;
+    margin: 0 0 16px;
+    font-size: 1.3rem;
+    letter-spacing: 0.2px;
+    color: var(--text);
   }
   .standings-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.84rem;
-    margin-bottom: 14px;
+    font-size: 1rem;
+    margin-bottom: 26px;
     table-layout: fixed;
   }
   .standings-table caption {
     text-align: left;
-    font-size: 0.72rem;
+    font-size: 0.8rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.7px;
     color: var(--muted);
-    padding: 0 0 5px;
+    padding: 0 0 8px 2px;
   }
   .standings-table th {
-    font-size: 0.68rem;
+    font-size: 0.74rem;
     color: var(--muted);
     font-weight: 700;
-    text-align: right;
-    padding: 4px 4px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 6px 4px 9px;
     border-bottom: 1px solid var(--border);
+    width: 64px;
   }
   .standings-table td {
-    padding: 5px 4px;
-    text-align: right;
-    border-bottom: 1px solid rgba(35,42,59,0.6);
+    padding: 12px 4px;
+    text-align: center;
+    border-bottom: 1px solid rgba(35,42,59,0.7);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
   .standings-table th:first-child,
-  .standings-table td:first-child { text-align: left; width: 52%; }
+  .standings-table td:first-child { text-align: left; width: auto; padding-left: 2px; }
+  .standings-table tbody tr:hover td { background: rgba(255,255,255,0.025); }
   .standings-table .team {
     display: flex;
     align-items: center;
-    gap: 7px;
-    overflow: hidden;
+    gap: 12px;
+    min-width: 0;
     font-weight: 600;
   }
-  .standings-table .team img { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
-  .standings-table .team .seed { color: var(--muted); width: 18px; flex-shrink: 0; text-align: right; font-size: 0.75rem; }
-  .standings-table .team .nm { overflow: hidden; text-overflow: ellipsis; }
+  .standings-table .team img { width: 26px; height: 26px; object-fit: contain; flex-shrink: 0; }
+  .standings-table .team .seed { color: var(--muted); width: 20px; flex-shrink: 0; text-align: right; font-size: 0.85rem; font-weight: 600; }
+  .standings-table .team .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .standings-table .w-col { font-weight: 700; }
   .standings-table tr.leader td { font-weight: 700; }
-  .standings-table tr.cut-playoff td { border-bottom: 2px solid #4a5a86; }
-  .standings-table tr.cut-playin td { border-bottom: 2px dashed #4a5a86; }
-  .standings-key { font-size: 0.72rem; color: var(--muted); padding: 0 18px 16px; }
+  .standings-table .strk-w { color: #86e3a6; font-weight: 700; }
+  .standings-table .strk-l { color: #ff9f9f; font-weight: 700; }
+  .standings-table tr.cut-playoff td { border-bottom: 2px solid #5a6a96; }
+  .standings-table tr.cut-playin td { border-bottom: 2px dashed #5a6a96; }
+  .standings-key { font-size: 0.85rem; color: var(--muted); padding: 0 26px 22px; line-height: 1.5; }
 
   @media (max-width: 640px) {
     header { padding: 32px 16px 24px; }
@@ -717,11 +713,19 @@
     .day-modal-header { padding: 14px 16px; }
     .day-modal-body { padding: 12px 16px 18px; }
     .cal-preview-tip { display: none !important; }
-    .standings-confs { grid-template-columns: 1fr; padding: 12px 12px 16px; }
-    .standings-head { padding: 14px 16px; font-size: 1.02rem; }
-    .standings-table { font-size: 0.78rem; }
-    .standings-table .hide-sm { display: none; }
-    .standings-key { padding: 0 12px 14px; }
+    .standings-confs { grid-template-columns: 1fr; gap: 8px; padding: 18px 14px 4px; }
+    .standings-head { padding: 14px 16px; font-size: 1.05rem; }
+    .standings-conf h4 { font-size: 1.15rem; margin-bottom: 12px; }
+    .standings-table { font-size: 0.95rem; margin-bottom: 22px; }
+    .standings-table th { width: 34px; }
+    .standings-table th:last-child { width: 62px; }
+    .standings-table td { padding: 10px 2px; }
+    .standings-table .team { gap: 8px; }
+    .standings-table .team img { width: 22px; height: 22px; }
+    .standings-table .team .seed { width: 16px; }
+    /* Full team names on phones: wrap to a second line rather than cutting off */
+    .standings-table .team .nm { white-space: normal; line-height: 1.25; }
+    .standings-key { padding: 0 14px 18px; font-size: 0.8rem; }
   }
 </style>
 </head>
@@ -1068,8 +1072,8 @@ const CURATED = {
     { date: "2026-10-17", time: "TBD", matchup: "Daniel Dubois vs Fabio Wardley II (WBO Heavyweight title)", venue: "The O2 Arena, London, England", note: "Immediate rematch after Dubois stopped Wardley in the 11th round in May 2026; Wardley activated his rematch clause; venue confirmed as The O2 Arena, London, broadcaster DAZN, doors open 6:30 PM BST; main-event ring walk still only estimated ~11:00 PM BST / 6:00 PM ET / 3:00 PM PT per DAZN's published schedule as of mid-Sep, still not officially finalized" },
     { date: "2026-10-17", time: "8:00 PM ET", matchup: "Sebastian Fundora vs Ermal Hadribeaj (WBC Super Welterweight title)", venue: "The Cosmopolitan of Las Vegas (Chelsea), Las Vegas, NV", note: "Fundora's 4th mandatory title defense vs unbeaten challenger Hadribeaj (23-0-1), who upset previously unbeaten Bakary Samake in a final eliminator; win would make Hadribeaj Albania's first world boxing champion; official per PBC/BoxingScene, same PBC tripleheader as Figueroa vs Kameda and a Jermall Charlo return bout; TNT/DAZN, confirmed start 8:00 PM ET / 5:00 PM PT" },
     { date: "2026-10-17", time: "8:00 PM ET", matchup: "Brandon Figueroa vs Tomoki Kameda (WBA Featherweight title)", venue: "The Cosmopolitan of Las Vegas (Chelsea), Las Vegas, NV", note: "Confirmed co-feature on the same PBC tripleheader as Fundora vs Hadribeaj; Figueroa's first defense since winning the belt from Nick Ball in February; broadcasts on TNT/truTV/DAZN per PBC official fight page" },
-    { date: "2026-10-24", time: "10:00 PM BST", matchup: "Dalton Smith vs Alberto Puello (WBC Super Lightweight title)", venue: "Utilita Arena, Sheffield, England", note: "Smith's first defense after winning the title from Subriel Matías in Jan 2026; rescheduled from June after Smith withdrew injured; confirmed per WBC/Ring Magazine, broadcast on DAZN; ring-walk time per DAZN schedule (~10:00 PM BST / 5:00 PM ET / 2:00 PM PT), still an estimate" },
-    { date: "2026-10-24", time: "8:00 PM ET", matchup: "Emanuel Navarrete vs O'Shaquie Foster (WBO/IBF/WBC Super Featherweight title unification)", venue: "Frost Bank Center, San Antonio, TX", note: "Three-belt junior lightweight unification: WBO/IBF champion Navarrete vs WBC champion Foster; WBO formally cleared the bout in early Sep 2026, officially announced by Top Rank; broadcasts on DAZN, main card start confirmed 8:00 PM ET / 5:00 PM PT" },
+    { date: "2026-10-24", time: "10:00 PM BST", matchup: "Dalton Smith vs Alberto Puello (WBC Super Lightweight title)", result: "Dalton Smith won by split decision (115-113, 115-113, 112-116), keeps WBC title", venue: "Utilita Arena, Sheffield, England", note: "Smith's first defense after winning the title from Subriel Matías in Jan 2026; rescheduled from June after Smith withdrew injured; confirmed per WBC/Ring Magazine, broadcast on DAZN; ring-walk time per DAZN schedule (~10:00 PM BST / 5:00 PM ET / 2:00 PM PT), still an estimate" },
+    { date: "2026-10-24", time: "8:00 PM ET", matchup: "Emanuel Navarrete vs O'Shaquie Foster (WBO/IBF/WBC Super Featherweight title unification)", result: "O'Shaquie Foster won by unanimous decision (118-108, 118-108, 115-111), unifies WBC/WBO/IBF", venue: "Frost Bank Center, San Antonio, TX", note: "Three-belt junior lightweight unification: WBO/IBF champion Navarrete vs WBC champion Foster; WBO formally cleared the bout in early Sep 2026, officially announced by Top Rank; broadcasts on DAZN, main card start confirmed 8:00 PM ET / 5:00 PM PT" },
     { date: "2026-10-31", time: "12:00 PM ET", matchup: "Christian Mbilli vs Canelo Alvarez (WBC Super Middleweight title)", venue: "ANB Arena, Riyadh, Saudi Arabia", note: "Canelo's first fight since losing to Terence Crawford in Sep 2025, challenging as the underdog; Mbilli (29-0-1) is the reigning champion, promoted to full titleholder after Crawford's retirement from the division; date reconfirmed by the WBC/Ring Magazine/ESPN for Oct 31 after the original Sep 12 date was postponed (Canelo cited a family matter); start time confirmed ~12:00 PM ET (evening local in Riyadh), DAZN" },
     { date: "2026-10-31", time: "TBD", matchup: "Rafael Espinoza vs Lorenzo Parra (WBO Featherweight title)", venue: "ANB Arena, Riyadh, Saudi Arabia", note: "Signed agreement reported by Dan Rafael/BoxingScene/boxingnews24 for Espinoza (28-0) to defend on the Canelo vs Mbilli undercard against WBO #1-ranked contender Parra (fresh off a 2nd-round KO of Elijah Pierce); Espinoza's first fight in nearly a year; not yet on an official Riyadh Season poster as of Sep 17, treat as highly likely but not 100% formalized" },
     { date: "2026-11-08", time: "8:00 PM ET", matchup: "Elif Nur Turhan vs Alycia Baumgardner (IBF Lightweight title)", venue: "College Park Center, Arlington, TX", note: "MVPW-07 card, a quadruple women's title event; Baumgardner (unified WBO/IBF/WBA Super Featherweight champ) moves up in weight to bid for a second division against unbeaten IBF Lightweight titleholder Turhan; streams on ESPN; start time confirmed 8:00 PM ET per ESPN/MVP/Bad Left Hook" },
@@ -1086,7 +1090,7 @@ const CURATED = {
     { date: "2026-09-26", time: "6:00 PM ET", matchup: "UFC Fight Night: Dumont vs. Perez", venue: "Meta Apex, Las Vegas, NV", note: "UFC Vegas 121; venue renamed from UFC Apex under a new 5-year Meta naming-rights deal announced Jan 2026" },
     { date: "2026-10-03", time: "9:00 PM ET", matchup: "UFC 332: Silva vs. Wang", venue: "Delta Center, Salt Lake City, UT", note: "Renamed and re-headlined (confirmed Sep 11 2026) after Valentina Shevchenko was injured and stripped of the title: Natália Silva vs Wang Cong now headlines for the vacant UFC Women's Flyweight Championship; Johnny Walker vs Mick Parkin and Deiveson Figueiredo vs Payton Talbott remain on the card; main card 9:00 PM ET / 6:00 PM PT" },
     { date: "2026-10-17", time: "8:00 PM EDT", matchup: "UFC Fight Night: Buckley vs. Malott", venue: "Rogers Place, Edmonton, Canada", note: "Welterweight bout Joaquin Buckley vs Mike Malott now the confirmed headliner (superseding earlier Barcelos vs Rosas Jr. reports); co-main is Erin Blanchfield vs Jasmine Jasudavicius; prelims 5:00 PM EDT, main card 8:00 PM EDT" },
-    { date: "2026-10-24", time: "10:00 AM ET", matchup: "UFC 333: Volkanovski vs. Evloev", venue: "Etihad Arena, Abu Dhabi, UAE", note: "UFC Featherweight Championship bout between champion Alexander Volkanovski and Movsar Evloev; date/venue/main event confirmed on ufc.com; card runs in the evening local UAE time, i.e. morning ET; co-main now confirmed as a second title fight, the Petr Yan vs Merab Dvalishvili UFC Bantamweight Championship trilogy bout, per Yahoo Sports/Sherdog" },
+    { date: "2026-10-24", time: "10:00 AM ET", matchup: "UFC 333: Volkanovski vs. Evloev", result: "Volkanovski won by TKO in round 2 (4:54), keeps featherweight title", venue: "Etihad Arena, Abu Dhabi, UAE", note: "UFC Featherweight Championship bout between champion Alexander Volkanovski and Movsar Evloev; date/venue/main event confirmed on ufc.com; card runs in the evening local UAE time, i.e. morning ET; co-main now confirmed as a second title fight, the Petr Yan vs Merab Dvalishvili UFC Bantamweight Championship trilogy bout, per Yahoo Sports/Sherdog" },
     { date: "2026-11-07", time: "8:00 PM ET", matchup: "UFC Fight Night: Brady vs. Bonfim", venue: "Meta APEX, Las Vegas, NV", note: "Sean Brady vs Gabriel Bonfim welterweight headliner confirmed; prelims 5:00 PM ET, main card 8:00 PM ET on Paramount+" },
     { date: "2026-11-14", time: "TBD", matchup: "UFC 334 (main event TBD)", venue: "Madison Square Garden, New York, NY", note: "Date and venue confirmed (branded 'Polymarket UFC 334'); first fight for the card surfaced Sep 3 -- lightweight Nazim Sadykhov vs Jefferson Nascimento, per Sadykhov's own announcement, not yet an official UFC.com booking; main event still TBD (names floated include Alex Pereira, Paddy Pimblett)" },
   ],
@@ -1160,12 +1164,12 @@ const CURATED = {
     { date: "2026-10-18", time: "10:00 AM SAST", matchup: "Australia tour of South Africa: 2nd Test", venue: "St George's Park, Gqeberha", note: "5-day Test, runs Oct 18-22", sportTag: "Cricket" },
     { date: "2026-10-18", time: "TBD", matchup: "Pakistan vs Sri Lanka (ODI Tri-Series, also featuring England)", venue: "Rawalpindi Cricket Stadium, Rawalpindi, Pakistan", note: "Opening match of a round-robin tri-series running Oct 18-31, final at Gaddafi Stadium, Lahore; exact start time still not announced by PCB as of mid-Sep 2026", sportTag: "Cricket" },
     { date: "2026-10-20", time: "TBD", matchup: "Pakistan vs England (ODI Tri-Series, also featuring Sri Lanka)", venue: "Rawalpindi Cricket Stadium, Rawalpindi, Pakistan", sportTag: "Cricket" },
-    { date: "2026-10-22", time: "TBD", matchup: "Sri Lanka vs England (ODI Tri-Series, also featuring Pakistan)", venue: "Rawalpindi Cricket Stadium, Rawalpindi, Pakistan", sportTag: "Cricket" },
-    { date: "2026-10-22", time: "8:00 PM NZDT", matchup: "New Zealand vs India, 1st T20I", venue: "Hagley Oval, Christchurch", sportTag: "Cricket" },
-    { date: "2026-10-24", time: "8:00 PM NZDT", matchup: "New Zealand vs India, 2nd T20I", venue: "Hagley Oval, Christchurch", sportTag: "Cricket" },
-    { date: "2026-10-25", time: "TBD", matchup: "Pakistan vs England (ODI Tri-Series, also featuring Sri Lanka)", venue: "Gaddafi Stadium, Lahore, Pakistan", note: "Series moves to Lahore for the final four matches", sportTag: "Cricket" },
-    { date: "2026-10-27", time: "TBD", matchup: "Pakistan vs Sri Lanka (ODI Tri-Series, also featuring England)", venue: "Gaddafi Stadium, Lahore, Pakistan", sportTag: "Cricket" },
-    { date: "2026-10-27", time: "8:00 PM NZDT", matchup: "New Zealand vs India, 3rd T20I", venue: "Hnry Stadium, Wellington", sportTag: "Cricket" },
+    { date: "2026-10-22", time: "TBD", matchup: "Sri Lanka vs England (ODI Tri-Series, also featuring Pakistan)", result: "Sri Lanka won by 2 wickets, chasing 430 (Brook 202 for England)", venue: "Rawalpindi Cricket Stadium, Rawalpindi, Pakistan", sportTag: "Cricket" },
+    { date: "2026-10-22", time: "8:00 PM NZDT", matchup: "New Zealand vs India, 1st T20I", result: "India won by 4 wickets", venue: "Hagley Oval, Christchurch", sportTag: "Cricket" },
+    { date: "2026-10-24", time: "8:00 PM NZDT", matchup: "New Zealand vs India, 2nd T20I", result: "India won by 4 wickets", venue: "Hagley Oval, Christchurch", sportTag: "Cricket" },
+    { date: "2026-10-25", time: "TBD", matchup: "Pakistan vs England (ODI Tri-Series, also featuring Sri Lanka)", result: "Pakistan won by 1 wicket (Shadab Khan 113*)", venue: "Gaddafi Stadium, Lahore, Pakistan", note: "Series moves to Lahore for the final four matches", sportTag: "Cricket" },
+    { date: "2026-10-27", time: "TBD", matchup: "Pakistan vs Sri Lanka (ODI Tri-Series, also featuring England)", result: "Sri Lanka won by 8 wickets (Madushanka 5/34)", venue: "Gaddafi Stadium, Lahore, Pakistan", sportTag: "Cricket" },
+    { date: "2026-10-27", time: "8:00 PM NZDT", matchup: "New Zealand vs India, 3rd T20I", result: "India won by 6 wickets (Abhishek Sharma 113)", venue: "Hnry Stadium, Wellington", sportTag: "Cricket" },
     { date: "2026-10-27", time: "10:30 AM SAST", matchup: "Australia tour of South Africa: 3rd Test", venue: "Newlands, Cape Town", note: "5-day Test, runs Oct 27-31; final Test of the series", sportTag: "Cricket" },
     { date: "2026-10-28", time: "10:00 AM BDT", matchup: "West Indies tour of Bangladesh: 1st Test", venue: "Sher-e-Bangla National Cricket Stadium, Mirpur, Dhaka, Bangladesh", note: "5-day Test; part of the ICC World Test Championship 2025-27 cycle; runs Oct 28-Nov 1; venue confirmed by BCB, preceded by a 3-day warm-up match Oct 22-24 at Bashundhara Sports Complex, Dhaka; start time confirmed at the standard Bangladesh Test start of 10:00 AM local (04:00 GMT)", sportTag: "Cricket" },
     { date: "2026-10-29", time: "TBD", matchup: "Sri Lanka vs England (ODI Tri-Series, also featuring Pakistan)", venue: "Gaddafi Stadium, Lahore, Pakistan", sportTag: "Cricket" },
@@ -1640,6 +1644,14 @@ function teamCell(entry, seed) {
   return `<div class="team">${seed !== undefined ? `<span class="seed">${seed}</span>` : ""}${logo ? `<img src="${esc(logo)}" alt="" loading="lazy">` : ""}<span class="nm">${esc(t.displayName)}</span></div>`;
 }
 
+function streakCell(entry) {
+  const v = statOf(entry, "streak")?.displayValue || "-";
+  const cls = v.startsWith("W") ? "strk-w" : v.startsWith("L") ? "strk-l" : "";
+  return `<td class="${cls}">${esc(v)}</td>`;
+}
+
+const STANDINGS_HEAD = `<thead><tr><th>Team</th><th>W</th><th>L</th><th>Streak</th></tr></thead>`;
+
 function renderNflStandings(data) {
   const confs = (data.children || []).map(conf => {
     const divs = (conf.children || []).map(div => {
@@ -1648,13 +1660,12 @@ function renderNflStandings(data) {
       return `
         <table class="standings-table">
           <caption>${esc(div.name)}</caption>
-          <thead><tr><th>Team</th><th>W</th><th>L</th><th>T</th><th class="hide-sm">PCT</th><th class="hide-sm">DIV</th><th>STRK</th></tr></thead>
+          ${STANDINGS_HEAD}
           <tbody>${rows.map((e, i) => `
             <tr class="${i === 0 ? "leader" : ""}">
-              <td>${teamCell(e, statOf(e, "playoffSeed")?.displayValue)}</td>
-              <td>${statText(e, "wins")}</td><td>${statText(e, "losses")}</td><td>${statText(e, "ties")}</td>
-              <td class="hide-sm">${statText(e, "winPercent")}</td><td class="hide-sm">${statText(e, "divisionRecord")}</td>
-              <td>${statText(e, "streak")}</td>
+              <td>${teamCell(e)}</td>
+              <td class="w-col">${statText(e, "wins")}</td><td>${statText(e, "losses")}</td>
+              ${streakCell(e)}
             </tr>`).join("")}
           </tbody>
         </table>`;
@@ -1662,7 +1673,7 @@ function renderNflStandings(data) {
     return `<div class="standings-conf"><h4>${esc(conf.abbreviation || conf.name)}</h4>${divs}</div>`;
   });
   return `<div class="standings-confs">${confs.join("")}</div>
-    <div class="standings-key">Bold = leading the division. The small number is the team's current playoff seed in its conference (top 7 make the playoffs).</div>`;
+    <div class="standings-key">Bold = leading the division.</div>`;
 }
 
 function renderNbaStandings(data) {
@@ -1674,20 +1685,19 @@ function renderNbaStandings(data) {
         <div class="standings-conf">
           <h4>${esc(conf.name)}</h4>
           <table class="standings-table">
-            <thead><tr><th>Team</th><th>W</th><th>L</th><th class="hide-sm">PCT</th><th>GB</th><th class="hide-sm">L10</th><th>STRK</th></tr></thead>
+            ${STANDINGS_HEAD}
             <tbody>${rows.map((e, i) => `
               <tr class="${i === 5 ? "cut-playoff" : i === 9 ? "cut-playin" : ""}">
                 <td>${teamCell(e, i + 1)}</td>
-                <td>${statText(e, "wins")}</td><td>${statText(e, "losses")}</td>
-                <td class="hide-sm">${statText(e, "winPercent")}</td><td>${statText(e, "gamesBehind")}</td>
-                <td class="hide-sm">${statText(e, "Last Ten Games")}</td><td>${statText(e, "streak")}</td>
+                <td class="w-col">${statText(e, "wins")}</td><td>${statText(e, "losses")}</td>
+                ${streakCell(e)}
               </tr>`).join("")}
             </tbody>
           </table>
         </div>`;
     });
   return `<div class="standings-confs">${confs.join("")}</div>
-    <div class="standings-key">Solid line: seeds 1 to 6 go straight to the playoffs. Dashed line: seeds 7 to 10 go to the play-in.</div>`;
+    <div class="standings-key">Solid line: places 1 to 6 go straight to the playoffs. Dashed line: places 7 to 10 go to the play-in.</div>`;
 }
 
 // Boxing, UFC, athletics, IPL and International have no league table, so nothing shows for them.

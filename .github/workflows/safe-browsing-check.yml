@@ -23,7 +23,7 @@ jobs:
         id: check
         env:
           SAFE_BROWSING_API_KEY: ${{ secrets.SAFE_BROWSING_API_KEY }}
-          SITE_URL: https://sports-calendar-v4.vercel.app/
+          SITE_URL: https://sports-calendar-brand-new-day.vercel.app/
         run: node scripts/check-safe-browsing.mjs
 
       - name: Open issue if flagged
