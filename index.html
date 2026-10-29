@@ -19,7 +19,6 @@
     --boxing: #c9b037;
     --ufc: #d81b60;
     --ipl: #8e44ad;
-    --epl: #04f5ff;
     --athletics: #2e86de;
     --international: #5c6bc0;
     --tag-cricket: #16a085;
@@ -553,6 +552,117 @@
   }
   .loading { color: var(--muted); padding: 18px 20px; font-size: 0.9rem; }
 
+  /* Scores on finished / live events */
+  .result {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+    font-weight: 700;
+    font-size: 0.95rem;
+    background: rgba(46, 204, 113, 0.14);
+    border: 1px solid rgba(46, 204, 113, 0.45);
+    color: #8ff0b4;
+    padding: 5px 11px;
+    border-radius: 8px;
+  }
+  .result.live { background: rgba(255,59,59,0.14); border-color: rgba(255,59,59,0.5); color: #ff9a9a; }
+  .result .result-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.85;
+  }
+  .event-card.past { opacity: 0.85; }
+  .section-subhead {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--muted);
+    margin: 4px 0 -4px;
+  }
+  .cal-day.past:not(.out-of-range) .cal-daynum { color: var(--muted); }
+
+  /* Standings */
+  .standings-section {
+    margin-bottom: 26px;
+    border-radius: 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.28);
+    overflow: hidden;
+    animation: fadeInUp 0.35s ease both;
+  }
+  .standings-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 16px 22px;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: #0b0e14;
+  }
+  .standings-head .sub { font-size: 0.8rem; font-weight: 600; opacity: 0.75; margin-left: auto; }
+  .standings-confs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    padding: 16px 18px 20px;
+  }
+  .standings-conf h4 {
+    margin: 0 0 10px;
+    font-size: 1.05rem;
+    letter-spacing: 0.3px;
+  }
+  .standings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+    margin-bottom: 14px;
+    table-layout: fixed;
+  }
+  .standings-table caption {
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    padding: 0 0 5px;
+  }
+  .standings-table th {
+    font-size: 0.68rem;
+    color: var(--muted);
+    font-weight: 700;
+    text-align: right;
+    padding: 4px 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .standings-table td {
+    padding: 5px 4px;
+    text-align: right;
+    border-bottom: 1px solid rgba(35,42,59,0.6);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .standings-table th:first-child,
+  .standings-table td:first-child { text-align: left; width: 52%; }
+  .standings-table .team {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    overflow: hidden;
+    font-weight: 600;
+  }
+  .standings-table .team img { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
+  .standings-table .team .seed { color: var(--muted); width: 18px; flex-shrink: 0; text-align: right; font-size: 0.75rem; }
+  .standings-table .team .nm { overflow: hidden; text-overflow: ellipsis; }
+  .standings-table tr.leader td { font-weight: 700; }
+  .standings-table tr.cut-playoff td { border-bottom: 2px solid #4a5a86; }
+  .standings-table tr.cut-playin td { border-bottom: 2px dashed #4a5a86; }
+  .standings-key { font-size: 0.72rem; color: var(--muted); padding: 0 18px 16px; }
+
   @media (max-width: 640px) {
     header { padding: 32px 16px 24px; }
     header h1 { font-size: 1.8rem; }
@@ -582,6 +692,11 @@
     .day-modal-header { padding: 14px 16px; }
     .day-modal-body { padding: 12px 16px 18px; }
     .cal-preview-tip { display: none !important; }
+    .standings-confs { grid-template-columns: 1fr; padding: 12px 12px 16px; }
+    .standings-head { padding: 14px 16px; font-size: 1.02rem; }
+    .standings-table { font-size: 0.78rem; }
+    .standings-table .hide-sm { display: none; }
+    .standings-key { padding: 0 12px 14px; }
   }
 </style>
 </head>
@@ -595,8 +710,8 @@
 <main id="app"></main>
 
 <footer>
-  Live data for NFL · NBA · UFC powered by API-Sports (free tier, only returns fixtures within its allowed date window).
-  Boxing · Athletics · IPL · Premier League are hand-curated from public schedules and may shift as promotions/broadcasters confirm cards and kickoff times, verify close to the date.
+  NFL and NBA fixtures, scores and standings come live from ESPN. UFC is checked against API-Sports.
+  Boxing · Athletics · IPL · International are hand-curated from public schedules and may shift as promotions/broadcasters confirm cards and kickoff times, verify close to the date.
 </footer>
 
 <script>
@@ -608,7 +723,6 @@ const HORIZON_END = new Date(NOW.getTime() + HORIZON_DAYS * 86400000);
 const SPORTS = [
   { id: "athletics",  name: "Athletics",        emoji: "🏃", color: "var(--athletics)", logo: "https://upload.wikimedia.org/wikipedia/commons/b/be/World_Athletics_icon_logo.svg" },
   { id: "boxing",     name: "Boxing",           emoji: "🥊", color: "var(--boxing)", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNYTwhG19SIwQ5PdZG1OhFRAcJV1jgv_PIEA&s" },
-  { id: "epl",        name: "Premier League",   emoji: "⚽", color: "var(--epl)", logo: "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" },
   { id: "ipl",        name: "IPL Cricket",      emoji: "🏏", color: "var(--ipl)", logo: "https://upload.wikimedia.org/wikipedia/commons/5/52/Ipl.svg" },
   { id: "nba",        name: "NBA",              emoji: "🏀", color: "var(--nba)", logo: "https://upload.wikimedia.org/wikipedia/en/0/03/National_Basketball_Association_logo.svg" },
   { id: "nfl",        name: "NFL",              emoji: "🏈", color: "var(--nfl)", logo: "https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg" },
@@ -954,189 +1068,10 @@ const CURATED = {
   ipl: [
     { date: null, time: "", matchup: "IPL 2026 season has concluded -- IPL 2027 offseason in progress (no matches fall within this 90-day window; IPL 2027 season starts March 2027)", venue: "IPL 2027 confirmed for March 14 - May 30, 2027", note: "BCCI's IPL Governing Council confirmed (Sep 15, 2026) that the IPL 2027 player auction will be a mini-auction (not a mega-auction) and will be held in India for the first time since 2023, reversing three straight overseas editions, after franchises raised logistical concerns about travelling delegations abroad; no host city announced yet -- selection depends heavily on five-star hotel availability during India's Oct-Dec wedding season -- and no exact date fixed, though broadly expected in December 2026 (earlier reports had floated Dec 16 at Etihad Arena, Abu Dhabi, which is now superseded by the India-hosting decision); official retained/released lists expected around late September 2026. Confirmed trade: Lucknow Super Giants and Delhi Capitals completed a swap sending Rishabh Pant back to Delhi Capitals (his franchise from 2016-2024) for a revised Rs 15 crore fee, with Kuldeep Yadav moving the other way to LSG for his existing Rs 13.5 crore price -- Pant took a roughly Rs 12 crore pay cut to facilitate the move, and Aiden Markram/Mitchell Marsh are now considered frontrunners for the LSG captaincy Pant vacated. CSK coaching search: Stephen Fleming ended his 18-year Chennai Super Kings association (5 IPL titles) to become England's Test head coach; a committee of MS Dhoni, captain Ruturaj Gaikwad and owner Rupa Gurunath is deciding his replacement, with Albie Morkel, Mike Hussey, Hemang Badani and Brendon McCullum reported as leading candidates -- no appointment made as of mid-Sep 2026 despite some reports suggesting an announcement around Sep 20; CSK has denied talks with Eoin Morgan. Hardik Pandya trade: unresolved as of mid-Sep 2026 -- after Mumbai Indians' poor 2026 season, KKR and Rajasthan Royals are reported as the most interested suitors, with a rumoured CSK offer of Shivam Dube (and possibly Ayush Mhatre) reportedly stalled/denied by CSK; MI officials have denied active trade negotiations, saying a post-season review must finish first, so Pandya could yet stay at MI." },
   ],
-  epl: (() => {
-    // Premier League 2026-27 fixtures (promoted clubs: Coventry City, Ipswich Town, Hull City).
-    // Home venues below are fixed facts (grounds don't move); kickoff times/dates are per the
-    // published fixture list as of Aug 2026 and are still subject to TV-selection reshuffling.
-    const VENUE = {
-      "Arsenal": "Emirates Stadium, London",
-      "Aston Villa": "Villa Park, Birmingham",
-      "AFC Bournemouth": "Vitality Stadium, Bournemouth",
-      "Brentford": "Gtech Community Stadium, Brentford",
-      "Brighton & Hove Albion": "Falmer Stadium (Amex Stadium), Brighton",
-      "Chelsea": "Stamford Bridge, London",
-      "Coventry City": "Coventry Building Society Arena, Coventry",
-      "Crystal Palace": "Selhurst Park, London",
-      "Everton": "Hill Dickinson Stadium, Liverpool",
-      "Fulham": "Craven Cottage, London",
-      "Hull City": "MKM Stadium, Hull",
-      "Ipswich Town": "Portman Road, Ipswich",
-      "Leeds United": "Elland Road, Leeds",
-      "Liverpool": "Anfield, Liverpool",
-      "Manchester City": "Etihad Stadium, Manchester",
-      "Manchester United": "Old Trafford, Manchester",
-      "Newcastle United": "St James' Park, Newcastle",
-      "Nottingham Forest": "The City Ground, Nottingham",
-      "Sunderland": "Stadium of Light, Sunderland",
-      "Tottenham Hotspur": "Tottenham Hotspur Stadium, London",
-    };
-    const NOTE_3PM = "Not selected for live UK broadcast, so this defaults to the traditional 3:00 PM Saturday kick-off slot; will move if picked up by a broadcaster closer to the date.";
-    const NOTE_UNCONFIRMED = "Kickoff time not yet announced by the Premier League/broadcasters as of late Aug 2026; provisional 3:00 PM UK slot shown until TV picks are confirmed.";
-    const F = (date, home, away, time, note) => ({
-      date, time, matchup: `${home} vs ${away}`, venue: VENUE[home], ...(note ? { note } : {}),
-    });
-    return [
-      F("2026-08-29", "Liverpool", "Nottingham Forest", "12:30 PM BST"),
-      F("2026-08-29", "AFC Bournemouth", "Everton", "3:00 PM BST", NOTE_3PM),
-      F("2026-08-29", "Coventry City", "Hull City", "3:00 PM BST", NOTE_3PM),
-      F("2026-08-29", "Tottenham Hotspur", "Newcastle United", "5:30 PM BST"),
-      F("2026-08-30", "Chelsea", "Brighton & Hove Albion", "2:00 PM BST"),
-      F("2026-08-30", "Leeds United", "Brentford", "2:00 PM BST"),
-      F("2026-08-30", "Sunderland", "Fulham", "2:00 PM BST"),
-      F("2026-08-30", "Manchester United", "Ipswich Town", "4:30 PM BST"),
-      F("2026-08-31", "Aston Villa", "Arsenal", "8:00 PM BST"),
-
-      F("2026-09-04", "Ipswich Town", "Liverpool", "8:00 PM BST"),
-      F("2026-09-05", "Newcastle United", "AFC Bournemouth", "12:30 PM BST"),
-      F("2026-09-05", "Brentford", "Sunderland", "3:00 PM BST", NOTE_3PM),
-      F("2026-09-05", "Brighton & Hove Albion", "Leeds United", "3:00 PM BST", NOTE_3PM),
-      F("2026-09-05", "Fulham", "Crystal Palace", "3:00 PM BST", NOTE_3PM),
-      F("2026-09-05", "Manchester City", "Coventry City", "3:00 PM BST", NOTE_3PM),
-      F("2026-09-05", "Nottingham Forest", "Tottenham Hotspur", "3:00 PM BST", NOTE_3PM),
-      F("2026-09-05", "Hull City", "Aston Villa", "5:30 PM BST"),
-      F("2026-09-06", "Everton", "Manchester United", "2:00 PM BST"),
-      F("2026-09-06", "Arsenal", "Chelsea", "4:30 PM BST"),
-
-      F("2026-09-12", "AFC Bournemouth", "Brentford", "3:00 PM BST", NOTE_3PM),
-      F("2026-09-12", "Aston Villa", "Nottingham Forest", "3:00 PM BST", NOTE_3PM),
-      F("2026-09-12", "Chelsea", "Hull City", "3:00 PM BST", NOTE_3PM),
-      F("2026-09-12", "Crystal Palace", "Ipswich Town", "3:00 PM BST", NOTE_3PM),
-      F("2026-09-12", "Liverpool", "Fulham", "3:00 PM BST", NOTE_3PM),
-      F("2026-09-12", "Tottenham Hotspur", "Everton", "5:30 PM BST"),
-      F("2026-09-12", "Sunderland", "Arsenal", "8:00 PM BST"),
-      F("2026-09-13", "Coventry City", "Brighton & Hove Albion", "2:00 PM BST"),
-      F("2026-09-13", "Manchester United", "Manchester City", "4:30 PM BST"),
-      F("2026-09-14", "Leeds United", "Newcastle United", "8:00 PM BST"),
-
-      F("2026-09-18", "Brentford", "Chelsea", "8:00 PM BST"),
-      F("2026-09-19", "Tottenham Hotspur", "Aston Villa", "12:30 PM BST"),
-      F("2026-09-19", "Brighton & Hove Albion", "Arsenal", "3:00 PM BST", NOTE_3PM),
-      F("2026-09-19", "Everton", "Ipswich Town", "3:00 PM BST", NOTE_3PM),
-      F("2026-09-19", "Leeds United", "Crystal Palace", "3:00 PM BST", NOTE_3PM),
-      F("2026-09-19", "Newcastle United", "Hull City", "3:00 PM BST", NOTE_3PM),
-      F("2026-09-19", "Nottingham Forest", "Coventry City", "5:30 PM BST"),
-      F("2026-09-20", "AFC Bournemouth", "Liverpool", "2:00 PM BST"),
-      F("2026-09-20", "Manchester City", "Sunderland", "2:00 PM BST"),
-      F("2026-09-20", "Fulham", "Manchester United", "4:30 PM BST"),
-
-      // No PL fixtures Sep 26-Oct 3: three-week international break (Nations League/friendlies).
-
-      F("2026-10-10", "Arsenal", "Leeds United", "12:30 PM BST"),
-      F("2026-10-10", "Aston Villa", "Brentford", "3:00 PM BST", NOTE_3PM),
-      F("2026-10-10", "Chelsea", "AFC Bournemouth", "3:00 PM BST", NOTE_3PM),
-      F("2026-10-10", "Ipswich Town", "Fulham", "3:00 PM BST", NOTE_3PM),
-      F("2026-10-10", "Sunderland", "Brighton & Hove Albion", "3:00 PM BST", NOTE_3PM),
-      F("2026-10-10", "Manchester United", "Tottenham Hotspur", "5:30 PM BST"),
-      F("2026-10-11", "Crystal Palace", "Nottingham Forest", "2:00 PM BST"),
-      F("2026-10-11", "Hull City", "Everton", "2:00 PM BST"),
-      F("2026-10-11", "Liverpool", "Manchester City", "4:30 PM BST"),
-      F("2026-10-12", "Coventry City", "Newcastle United", "8:00 PM BST"),
-
-      F("2026-10-17", "Everton", "Chelsea", "12:30 PM BST"),
-      F("2026-10-17", "Brentford", "Liverpool", "3:00 PM BST", NOTE_3PM),
-      F("2026-10-17", "Fulham", "Hull City", "3:00 PM BST", NOTE_3PM),
-      F("2026-10-17", "Manchester City", "Ipswich Town", "3:00 PM BST", NOTE_3PM),
-      F("2026-10-17", "Newcastle United", "Aston Villa", "5:30 PM BST"),
-      F("2026-10-18", "AFC Bournemouth", "Sunderland", "2:00 PM BST"),
-      F("2026-10-18", "Brighton & Hove Albion", "Crystal Palace", "2:00 PM BST"),
-      F("2026-10-18", "Leeds United", "Manchester United", "2:00 PM BST"),
-      F("2026-10-18", "Nottingham Forest", "Arsenal", "4:30 PM BST"),
-      F("2026-10-19", "Tottenham Hotspur", "Coventry City", "8:00 PM BST"),
-
-      F("2026-10-23", "Ipswich Town", "Nottingham Forest", "8:00 PM BST"),
-      F("2026-10-24", "Aston Villa", "Manchester City", "12:30 PM BST"),
-      F("2026-10-24", "Arsenal", "Everton", "3:00 PM BST", NOTE_3PM),
-      F("2026-10-24", "Coventry City", "Fulham", "3:00 PM BST", NOTE_3PM),
-      F("2026-10-24", "Liverpool", "Brighton & Hove Albion", "3:00 PM BST", NOTE_3PM),
-      F("2026-10-24", "Chelsea", "Tottenham Hotspur", "5:30 PM BST"),
-      // Clocks go back to GMT in the UK on Oct 25.
-      F("2026-10-25", "Crystal Palace", "Newcastle United", "2:00 PM GMT"),
-      F("2026-10-25", "Hull City", "Brentford", "2:00 PM GMT"),
-      F("2026-10-25", "Manchester United", "AFC Bournemouth", "2:00 PM GMT"),
-      F("2026-10-25", "Sunderland", "Leeds United", "4:30 PM GMT"),
-
-      F("2026-10-31", "Chelsea", "Manchester United", "12:30 PM GMT"),
-      F("2026-10-31", "AFC Bournemouth", "Leeds United", "3:00 PM GMT", NOTE_3PM),
-      F("2026-10-31", "Brentford", "Nottingham Forest", "3:00 PM GMT", NOTE_3PM),
-      F("2026-10-31", "Coventry City", "Sunderland", "3:00 PM GMT", NOTE_3PM),
-      F("2026-10-31", "Hull City", "Ipswich Town", "3:00 PM GMT", NOTE_3PM),
-      F("2026-10-31", "Manchester City", "Brighton & Hove Albion", "3:00 PM GMT", NOTE_3PM),
-      F("2026-10-31", "Tottenham Hotspur", "Crystal Palace", "5:30 PM GMT"),
-      F("2026-11-01", "Aston Villa", "Fulham", "2:00 PM GMT"),
-      F("2026-11-01", "Liverpool", "Arsenal", "4:30 PM GMT"),
-      F("2026-11-02", "Newcastle United", "Everton", "8:00 PM GMT"),
-
-      F("2026-11-07", "Arsenal", "Hull City", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-07", "Brighton & Hove Albion", "Brentford", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-07", "Crystal Palace", "Liverpool", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-07", "Everton", "Coventry City", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-07", "Fulham", "Newcastle United", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-07", "Ipswich Town", "AFC Bournemouth", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-07", "Leeds United", "Tottenham Hotspur", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-07", "Manchester United", "Aston Villa", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-07", "Nottingham Forest", "Manchester City", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-07", "Sunderland", "Chelsea", "3:00 PM GMT", NOTE_UNCONFIRMED),
-
-      // No PL fixtures Nov 14: international break (World Cup qualifying window/friendlies).
-
-      F("2026-11-21", "AFC Bournemouth", "Nottingham Forest", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-21", "Aston Villa", "Sunderland", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-21", "Brentford", "Everton", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-21", "Chelsea", "Leeds United", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-21", "Coventry City", "Crystal Palace", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-21", "Hull City", "Brighton & Hove Albion", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-21", "Liverpool", "Manchester United", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-21", "Manchester City", "Fulham", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-21", "Newcastle United", "Arsenal", "3:00 PM GMT", NOTE_UNCONFIRMED),
-      F("2026-11-21", "Tottenham Hotspur", "Ipswich Town", "3:00 PM GMT", NOTE_UNCONFIRMED),
-    ];
-  })(),
+  // Athletics is paused until May 2027: autumn/winter is almost all marathons, which aren't wanted.
+  // Do not add any athletics events dated before ATHLETICS_RESUME (see below).
   athletics: [
-    { date: "2026-09-19", time: "10:10 AM CEST", matchup: "World Athletics Road Running Championships (Copenhagen 26) -- Mile & 5K", venue: "Copenhagen / Frederiksberg, Denmark", note: "Inaugural event; half marathon races follow on Sep 20" },
-    { date: "2026-09-20", time: "9:10 AM CEST", matchup: "World Athletics Road Running Championships (Copenhagen 26) -- Half Marathon", venue: "Copenhagen / Frederiksberg, Denmark", note: "The marquee race of the championships" },
-    { date: "2026-09-23", time: "TBD", matchup: "Asian Games 2026 (Aichi-Nagoya) -- Athletics begins", venue: "Paloma Mizuho Stadium, Nagoya, Japan", note: "Track & field runs Sep 23-29; Games overall run Sep 10-Oct 4 with opening ceremony Sep 19; session-by-session schedule with individual event times still not finalized as of mid-Sep 2026" },
-    { date: "2026-09-26", time: "7:30 AM JST", matchup: "Asian Games 2026 (Aichi-Nagoya) -- Marathon (Men's 7:30 AM, Women's 7:50 AM)", venue: "Nagoya, Japan", note: "Confirmed date/times for the Games' road marathon, held on the second weekend; men's and women's races start roughly 20 minutes apart" },
-    { date: "2026-09-27", time: "9:15 AM CEST", matchup: "BMW Berlin Marathon", venue: "Berlin, Germany", note: "Abbott World Marathon Major" },
-    { date: "2026-10-04", time: "9:00 AM CEST", matchup: "Košice Peace Marathon", venue: "Košice, Slovakia", note: "World Athletics Silver Label; world's oldest continuously-run marathon (since 1924)" },
-    { date: "2026-10-11", time: "7:30 AM CDT", matchup: "Bank of America Chicago Marathon", venue: "Chicago, IL", note: "Abbott World Marathon Major" },
-    { date: "2026-10-11", time: "9:00 AM CEST", matchup: "ASML Marathon Eindhoven", venue: "Eindhoven, Netherlands", note: "Race weekend runs Oct 10-11; marathon on Oct 11" },
-    { date: "2026-10-18", time: "10:35 AM BST", matchup: "AJ Bell Great South Run", venue: "Portsmouth/Southsea, England", note: "One of Europe's most popular 10-mile road races; ~30,000 runners" },
-    { date: "2026-10-18", time: "8:45 AM EDT", matchup: "TCS Toronto Waterfront Marathon", venue: "Toronto, Canada", note: "Abbott World Marathon Major" },
-    { date: "2026-10-18", time: "9:00 AM CEST", matchup: "TCS Amsterdam Marathon", venue: "Amsterdam, Netherlands", note: "World Marathon Major (Platinum Label)" },
-    { date: "2026-10-18", time: "7:30 AM CST", matchup: "Beijing Marathon", venue: "Beijing, China" },
-    { date: "2026-10-18", time: "5:30 AM IST", matchup: "Vedanta Delhi Half Marathon", venue: "Jawaharlal Nehru Stadium, Delhi, India", note: "World Athletics Gold Label road race; flag-off 5:30 AM IST with runners starting in waves by seed time" },
-    { date: "2026-10-18", time: "9:00 AM CEST", matchup: "NLB Ljubljana Marathon", venue: "Ljubljana, Slovenia", note: "World Athletics Gold Label; 30th edition; also features half marathon and 10K same day" },
-    { date: "2026-10-25", time: "9:00 AM ET", matchup: "Marine Corps Marathon", venue: "Arlington/Washington, D.C.", note: "One of the largest marathons in the US (~30,000 runners); start time approximate" },
-    { date: "2026-10-25", time: "10:00 AM CET", matchup: "Mainova Frankfurt Marathon", venue: "Frankfurt, Germany", note: "World Athletics Gold Label marathon; European clocks fall back from CEST to CET this same morning" },
-    { date: "2026-10-25", time: "9:40 AM CET", matchup: "Wizz Air Venice Marathon", venue: "Venice, Italy", note: "40th edition" },
-    { date: "2026-10-25", time: "9:00 AM GMT", matchup: "Irish Life Dublin Marathon", venue: "Dublin, Ireland", note: "World Athletics Elite Label road race; ~20,000+ runners" },
-    { date: "2026-10-25", time: "9:00 AM CET", matchup: "Valencia Half Marathon (Medio Maratón Valencia Trinidad Alfonso)", venue: "Valencia, Spain", note: "World Athletics Gold Label; part of the SuperHalfs series; European clocks fall back from CEST to CET this same morning" },
-    { date: "2026-11-01", time: "8:00 AM ET", matchup: "TCS New York City Marathon", venue: "New York, NY", note: "Abbott World Marathon Major, 50th running" },
-    { date: "2026-11-01", time: "9:00 AM local", matchup: "Istanbul Marathon", venue: "Istanbul, Turkey", note: "World Athletics Gold Label; the only intercontinental marathon, crossing from Asia to Europe" },
-    { date: "2026-11-08", time: "8:30 AM EET", matchup: "Athens Marathon \"The Authentic\"", venue: "Marathon to Athens, Greece", note: "43rd edition; World Athletics Gold Label; registration sold out" },
-    { date: "2026-11-08", time: "8:20 AM JST", matchup: "Fukuoka Marathon", venue: "Fukuoka, Japan", note: "World Athletics Elite Label marathon; one of Japan's most prestigious men's marathons; start confirmed 8:20 AM JST (wheelchair race 8:10 AM JST) per official f-marathon.jp race site, course starts in Tenjin and finishes in Itoshima" },
-    { date: "2026-11-14", time: "7:00 AM ET", matchup: "Allianz Richmond Marathon", venue: "Richmond, VA", note: "USATF-certified Boston Qualifier; World Athletics label tier not officially confirmed; start confirmed per richmondmarathon.org" },
-    { date: "2026-11-14", time: "11:00 AM CET", matchup: "Sparkassen Cross Pforzheim", venue: "Pforzheim, Germany", note: "World Athletics Cross Country Tour, Gold level; start time (10:00 GMT) per World Athletics/European Athletics competition calendar" },
-    { date: "2026-11-15", time: "1:00 PM CET", matchup: "NN Zevenheuvelenloop (15K)", venue: "Nijmegen, Netherlands", note: "World Athletics Gold Label road race; billed as the world's fastest 15K and site of multiple world records/bests; elite men's/women's start time varies slightly by source" },
-    { date: "2026-11-22", time: "8:30 AM EAT", matchup: "Great Ethiopian Run (10K)", venue: "Addis Ababa, Ethiopia", note: "World Athletics Elite Label 10K road race; expected record field of ~60,000 participants; start time per race-info aggregators, not yet the race's own official page" },
-    { date: "2026-11-22", time: "7:00 AM ET", matchup: "TIAA Philadelphia Marathon", venue: "Philadelphia, PA", note: "World Athletics Label road race; race weekend runs Nov 20-22 with half marathon/8K on Nov 21; already sold out; 7:00 AM start for runners/walkers (6:55 AM push-rim wheelchairs) per philadelphiamarathon.com" },
-    { date: "2026-11-22", time: "9:01 AM CET", matchup: "Cinque Mulini (94th edition)", venue: "San Vittore Olona, Italy", note: "World Athletics Cross Country Tour, Gold level; 9:01 AM is the start of the race-day program, with the headline elite races following through late morning" },
-    { date: "2026-11-22", time: "TBD", matchup: "Cross Internacional de Atapuerca (XXII edition)", venue: "Atapuerca, Burgos, Spain", note: "World Athletics Cross Country Tour, Gold level; exact elite start time not yet published" },
-    { date: "2026-12-06", time: "8:15 AM CET", matchup: "Valencia Marathon (Trinidad Alfonso Zurich Marathon)", venue: "Valencia, Spain", note: "World Athletics Platinum Label; a World Marathon Majors candidate race" },
-    { date: "2026-12-06", time: "7:00 AM CST", matchup: "Shanghai Marathon", venue: "Shanghai, China", note: "30th edition; a World Marathon Majors candidate race" },
-    { date: "2026-12-06", time: "7:00 AM PT", matchup: "California International Marathon (2026 USATF Marathon Championships)", venue: "Sacramento, CA", note: "Serves as the U.S. national marathon championship race" },
-    { date: "2026-12-06", time: "4:30 AM SGT", matchup: "BYD Singapore International Marathon presented by adidas", venue: "Singapore", note: "World Athletics Gold Label marathon; Southeast Asia's only Gold Label race; new two-day format splits the full marathon (Dec 6) from the half marathon (Dec 5) for the first time; race weekend runs Dec 4-6" },
-    { date: "2026-12-13", time: "5:00 AM HST", matchup: "JAL Honolulu Marathon", venue: "Honolulu, HI", note: "Marathon Weekend runs Dec 12-13, marathon on Dec 13; start time confirmed per official honolulumarathon.org" },
+    { date: null, time: "", matchup: "Athletics paused until May 2027", venue: "Autumn and winter are almost all marathons, so nothing is listed until the outdoor track season", note: "Diamond League and championship meets return from May 2027." },
   ],
   international: [
     { date: "2026-09-17", time: "7:00 PM IST", matchup: "India vs Afghanistan, 3rd T20I", venue: "Arun Jaitley Stadium, New Delhi", sportTag: "Cricket" },
@@ -1277,6 +1212,30 @@ const CURATED = {
   ],
 };
 
+// Athletics is paused until this date (autumn/winter is almost all marathons).
+const ATHLETICS_RESUME = "2027-05-01";
+const ET_TZ = "America/New_York";
+const ESPN_SITE = "https://site.api.espn.com/apis/site/v2/sports";
+const ESPN_STANDINGS = "https://site.api.espn.com/apis/v2/sports";
+
+const pad2 = n => String(n).padStart(2, "0");
+function ymd(d) { return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`; }
+function addDays(n) { return new Date(NOW.getFullYear(), NOW.getMonth(), NOW.getDate() + n); }
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+const TODAY_STR = ymd(NOW);
+const HORIZON_STR = ymd(HORIZON_END);
+// Finished events with a score stay in each sport's list for this many days.
+const RECENT_DAYS = 7;
+const RECENT_START_STR = ymd(addDays(-RECENT_DAYS));
+// The calendar also lets you go back one month to see past results.
+const CAL_MIN_MONTH = new Date(NOW.getFullYear(), NOW.getMonth() - 1, 1);
+const CAL_MAX_MONTH = new Date(HORIZON_END.getFullYear(), HORIZON_END.getMonth(), 1);
+const CAL_START_STR = ymd(CAL_MIN_MONTH);
+let calCursor = new Date(NOW.getFullYear(), NOW.getMonth(), 1);
+
 function fmtDate(d) {
   if (!d) return "";
   const dt = new Date(d + "T00:00:00");
@@ -1285,25 +1244,78 @@ function fmtDate(d) {
 
 function inWindow(dateStr) {
   if (!dateStr) return true; // notices without a date (e.g. "season concluded") always show
-  const dt = new Date(dateStr + "T00:00:00");
-  return dt >= new Date(NOW.toDateString()) && dt <= HORIZON_END;
+  return dateStr >= TODAY_STR && dateStr <= HORIZON_STR;
+}
+
+function inCalendarRange(dateStr) {
+  return !!dateStr && dateStr >= CAL_START_STR && dateStr <= HORIZON_STR;
+}
+
+function hiddenForSport(sport, e) {
+  return sport.id === "athletics" && e.date && e.date < ATHLETICS_RESUME;
+}
+
+// A score badge. ESPN events set resultState to "final" or "live"; curated events can
+// carry a plain `result` string (e.g. "Canelo won by unanimous decision").
+function resultHtml(e) {
+  if (!e.result) return "";
+  const label = e.resultState === "live" ? "Live" : e.resultState === "final" ? "Final" : "Result";
+  return `<div class="result${e.resultState === "live" ? " live" : ""}"><span class="result-label">${label}</span><span>${esc(e.result)}</span></div>`;
 }
 
 const ALL_EVENTS = [];
+const TRACKED_KEYS = new Set();
 
 function trackEvents(sport, events) {
   events.forEach(e => {
-    if (e.date && inWindow(e.date)) {
-      const color = e.sportTag && SPORT_TAG_COLOR[e.sportTag] ? SPORT_TAG_COLOR[e.sportTag] : sport.color;
-      const name = e.sportTag || sport.name;
-      ALL_EVENTS.push({ date: e.date, color, name, matchup: e.matchup, time: e.time, venue: e.venue });
-    }
+    if (!inCalendarRange(e.date) || hiddenForSport(sport, e)) return;
+    const key = `${sport.id}|${e.id || e.date + "|" + e.matchup}`;
+    if (TRACKED_KEYS.has(key)) return;
+    TRACKED_KEYS.add(key);
+    const color = e.sportTag && SPORT_TAG_COLOR[e.sportTag] ? SPORT_TAG_COLOR[e.sportTag] : sport.color;
+    ALL_EVENTS.push({
+      date: e.date, color, name: e.sportTag || sport.name,
+      matchup: e.matchup, time: e.time, venue: e.venue,
+      result: e.result, resultState: e.resultState,
+      // NFL/NBA days have many games, so the calendar shows them as one "N games" pill.
+      group: sport.id === "nfl" || sport.id === "nba" ? sport.name : null,
+      sortKey: e.sortKey || "",
+    });
   });
 }
 
-const CAL_MIN_MONTH = new Date(NOW.getFullYear(), NOW.getMonth(), 1);
-const CAL_MAX_MONTH = new Date(HORIZON_END.getFullYear(), HORIZON_END.getMonth(), 1);
-let calCursor = new Date(CAL_MIN_MONTH);
+function eventsOn(dateStr) {
+  return ALL_EVENTS.filter(e => e.date === dateStr)
+    .sort((a, b) => a.sortKey.localeCompare(b.sortKey));
+}
+
+// Collapse a day's NFL/NBA games into one pill each.
+function calendarItems(dayEvents) {
+  const items = [];
+  const groups = {};
+  dayEvents.forEach(e => {
+    if (!e.group) { items.push(e); return; }
+    if (!groups[e.group]) {
+      groups[e.group] = { color: e.color, name: e.group, list: [] };
+      items.push(groups[e.group]);
+    }
+    groups[e.group].list.push(e);
+  });
+  return items.map(it => {
+    if (!it.list) return it;
+    if (it.list.length === 1) return it.list[0];
+    const live = it.list.filter(e => e.resultState === "live").length;
+    const done = it.list.filter(e => e.resultState === "final").length;
+    const meta = live ? `${live} live now` : done === it.list.length ? "All final, click for scores" : done ? `${done} final` : it.list[0].time;
+    return { color: it.color, name: it.name, matchup: `${it.list.length} games`, meta };
+  });
+}
+
+function pillMeta(item) {
+  if (item.meta !== undefined) return item.meta || "";
+  if (item.result) return `${item.resultState === "live" ? "Live" : "Final"}: ${item.result}`;
+  return [item.time, item.venue].filter(Boolean).join(" · ");
+}
 
 function buildCalendarShell() {
   const details = document.createElement("div");
@@ -1360,20 +1372,20 @@ let previewTipEl = null;
 
 function showPreviewTip(cellEl) {
   const dateStr = cellEl.dataset.date;
-  const events = ALL_EVENTS.filter(e => e.date === dateStr);
-  if (events.length === 0 || !previewTipEl) return;
+  const items = calendarItems(eventsOn(dateStr));
+  if (items.length === 0 || !previewTipEl) return;
 
   const dateObj = new Date(dateStr + "T00:00:00");
   const label = dateObj.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
   previewTipEl.innerHTML = `
     <div class="tip-date">${label}</div>
-    ${events.slice(0, 5).map(e => `
+    ${items.slice(0, 5).map(e => `
       <div class="tip-row">
         <span class="tip-dot" style="background:${e.color}"></span>
-        <span class="tip-name">${e.name}: ${e.matchup}</span>
+        <span class="tip-name">${esc(e.name)}: ${esc(e.result && e.resultState !== "live" ? e.result : e.matchup)}</span>
       </div>
     `).join("")}
-    <div class="tip-hint">${events.length > 5 ? `+${events.length - 5} more — click for details` : "Click for details"}</div>
+    <div class="tip-hint">${items.length > 5 ? `+${items.length - 5} more, click for details` : "Click for details"}</div>
   `;
 
   previewTipEl.style.display = "block";
@@ -1422,16 +1434,17 @@ function buildDayModal() {
 
 function openDayModal(dateStr) {
   hidePreviewTip();
-  const events = ALL_EVENTS.filter(e => e.date === dateStr);
+  const events = eventsOn(dateStr);
   const dateObj = new Date(dateStr + "T00:00:00");
   const label = dateObj.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
   document.getElementById("day-modal-title").textContent = label;
   document.getElementById("day-modal-body").innerHTML = events.map(e => `
     <div class="day-modal-event">
-      <span class="dm-sport" style="background:${e.color}">${e.name}</span>
-      <div class="dm-matchup">${e.matchup}</div>
-      <div class="dm-meta">${e.time ? `<span>🕒 ${e.time}</span>` : ""}</div>
-      ${e.venue ? `<div class="dm-venue">📍 ${e.venue}</div>` : ""}
+      <span class="dm-sport" style="background:${e.color}">${esc(e.name)}</span>
+      <div class="dm-matchup">${esc(e.matchup)}</div>
+      ${resultHtml(e)}
+      <div class="dm-meta">${e.time && !e.result ? `<span>🕒 ${esc(e.time)}</span>` : ""}</div>
+      ${e.venue ? `<div class="dm-venue">📍 ${esc(e.venue)}</div>` : ""}
     </div>
   `).join("");
   document.getElementById("day-modal-backdrop").classList.add("open");
@@ -1453,7 +1466,6 @@ function renderCalendarMonth() {
 
   const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
   const startWeekday = new Date(year, monthIndex, 1).getDay();
-  const todayStr = NOW.toISOString().slice(0, 10);
 
   let cellsHtml = "";
   ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(d => {
@@ -1462,23 +1474,28 @@ function renderCalendarMonth() {
   for (let i = 0; i < startWeekday; i++) {
     cellsHtml += `<div class="cal-day empty"></div>`;
   }
+  const monthDates = [];
   for (let day = 1; day <= daysInMonth; day++) {
-    const dateStr = `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-    const dayEvents = ALL_EVENTS.filter(e => e.date === dateStr);
-    const isToday = dateStr === todayStr;
-    const outOfRange = !inWindow(dateStr);
+    const dateStr = `${year}-${pad2(monthIndex + 1)}-${pad2(day)}`;
+    if (inCalendarRange(dateStr)) monthDates.push(dateStr);
+    const items = calendarItems(eventsOn(dateStr));
+    const isToday = dateStr === TODAY_STR;
+    const outOfRange = !inCalendarRange(dateStr);
+    const isPast = dateStr < TODAY_STR;
     const MAX_PILLS = 2;
-    const visibleEvents = dayEvents.slice(0, MAX_PILLS);
-    const hiddenCount = dayEvents.length - visibleEvents.length;
-    const pills = visibleEvents.map(e => `
+    const visible = items.slice(0, MAX_PILLS);
+    const hiddenCount = items.length - visible.length;
+    const pills = visible.map(e => {
+      const meta = pillMeta(e);
+      return `
       <div class="cal-event-pill" style="background:${e.color}">
-        <span class="pill-name">${e.name}: ${e.matchup}</span>
-        ${e.time || e.venue ? `<span class="pill-meta">${[e.time, e.venue].filter(Boolean).join(" · ")}</span>` : ""}
-      </div>
-    `).join("") + (hiddenCount > 0 ? `<div class="cal-more">+${hiddenCount} more</div>` : "");
-    const hasEvents = dayEvents.length > 0;
+        <span class="pill-name">${esc(e.name)}: ${esc(e.matchup)}</span>
+        ${meta ? `<span class="pill-meta">${esc(meta)}</span>` : ""}
+      </div>`;
+    }).join("") + (hiddenCount > 0 ? `<div class="cal-more">+${hiddenCount} more</div>` : "");
+    const hasEvents = items.length > 0;
     cellsHtml += `
-      <div class="cal-day${outOfRange ? " out-of-range" : ""}${isToday ? " today" : ""}${hasEvents ? " has-events" : ""}"
+      <div class="cal-day${outOfRange ? " out-of-range" : ""}${isPast ? " past" : ""}${isToday ? " today" : ""}${hasEvents ? " has-events" : ""}"
         data-date="${dateStr}"
         ${hasEvents ? 'tabindex="0" role="button" aria-haspopup="dialog"' : ""}>
         <span class="cal-daynum">${day}</span>
@@ -1488,11 +1505,190 @@ function renderCalendarMonth() {
   }
 
   document.getElementById("cal-grid").innerHTML = cellsHtml;
+
+  // NBA plays nearly every night, so its games are fetched one month at a time as you browse.
+  const shownMonth = calCursor.getTime();
+  ensureNbaDates(monthDates).then(added => {
+    if (added && calCursor.getTime() === shownMonth) renderCalendarMonth();
+  });
 }
 
 function renderCalendar() {
   renderCalendarMonth();
 }
+
+/* ---------- ESPN data (NFL + NBA fixtures, scores, standings) ---------- */
+
+const ET_DATE_FMT = new Intl.DateTimeFormat("en-CA", { timeZone: ET_TZ, year: "numeric", month: "2-digit", day: "2-digit" });
+const ET_TIME_FMT = new Intl.DateTimeFormat("en-US", { timeZone: ET_TZ, hour: "numeric", minute: "2-digit" });
+
+function espnToEvent(ev) {
+  const comp = ev.competitions?.[0] || {};
+  const teams = comp.competitors || [];
+  const home = teams.find(t => t.homeAway === "home");
+  const away = teams.find(t => t.homeAway === "away");
+  if (!home || !away || !ev.date) return null;
+  const when = new Date(ev.date);
+  const addr = comp.venue?.address || {};
+  const venue = comp.venue ? [comp.venue.fullName, addr.city, addr.state || addr.country].filter(Boolean).join(", ") : "";
+  const status = ev.status?.type || {};
+  const nm = t => t.team?.shortDisplayName || t.team?.displayName;
+  let result = null, resultState = null;
+  if (status.state === "post" && status.completed) {
+    const [w, l] = Number(home.score) >= Number(away.score) ? [home, away] : [away, home];
+    const ot = /OT/.test(status.shortDetail || "") ? " (OT)" : "";
+    result = `${nm(w)} ${w.score}, ${nm(l)} ${l.score}${ot}`;
+    resultState = "final";
+  } else if (status.state === "in") {
+    result = `${nm(away)} ${away.score} - ${home.score} ${nm(home)} · ${status.shortDetail || ""}`;
+    resultState = "live";
+  }
+  return {
+    id: ev.id,
+    date: ET_DATE_FMT.format(when),
+    time: comp.timeValid === false ? "TBD" : `${ET_TIME_FMT.format(when)} ET`,
+    matchup: `${away.team?.displayName} vs ${home.team?.displayName}`,
+    venue,
+    result,
+    resultState,
+    sortKey: ev.date,
+  };
+}
+
+async function espnScoreboard(path, query) {
+  try {
+    const res = await fetch(`${ESPN_SITE}/${path}/scoreboard?${query}`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.events || []).map(espnToEvent).filter(Boolean);
+  } catch (err) {
+    return [];
+  }
+}
+
+// Whole NFL regular season (weeks 1-18), with scores for games already played.
+async function loadNflSeason() {
+  const season = NOW.getMonth() >= 2 ? NOW.getFullYear() : NOW.getFullYear() - 1;
+  const weeks = Array.from({ length: 18 }, (_, i) => i + 1);
+  const results = await Promise.all(weeks.map(w => espnScoreboard("football/nfl", `seasontype=2&week=${w}&dates=${season}`)));
+  return results.flat();
+}
+
+const nbaLoadedDates = new Set();
+
+async function fetchNbaDates(dates) {
+  const need = dates.filter(d => !nbaLoadedDates.has(d));
+  need.forEach(d => nbaLoadedDates.add(d));
+  const results = await Promise.all(need.map(d => espnScoreboard("basketball/nba", `dates=${d.replace(/-/g, "")}`)));
+  return results.flat();
+}
+
+async function ensureNbaDates(dates) {
+  const events = await fetchNbaDates(dates);
+  if (!events.length) return false;
+  trackEvents(sportById("nba"), events);
+  return true;
+}
+
+/* ---------- Standings (shown above the calendar for NFL and NBA) ---------- */
+
+const statOf = (entry, name) => (entry.stats || []).find(s => s.name === name);
+const statVal = (entry, name) => Number(statOf(entry, name)?.value ?? 0);
+const statText = (entry, name) => esc(statOf(entry, name)?.displayValue ?? "-");
+
+function teamCell(entry, seed) {
+  const t = entry.team || {};
+  const logo = t.logos?.[0]?.href;
+  return `<div class="team">${seed !== undefined ? `<span class="seed">${seed}</span>` : ""}${logo ? `<img src="${esc(logo)}" alt="" loading="lazy">` : ""}<span class="nm">${esc(t.displayName)}</span></div>`;
+}
+
+function renderNflStandings(data) {
+  const confs = (data.children || []).map(conf => {
+    const divs = (conf.children || []).map(div => {
+      const rows = [...(div.standings?.entries || [])].sort((a, b) =>
+        (statVal(b, "winPercent") - statVal(a, "winPercent")) || (statVal(a, "playoffSeed") - statVal(b, "playoffSeed")));
+      return `
+        <table class="standings-table">
+          <caption>${esc(div.name)}</caption>
+          <thead><tr><th>Team</th><th>W</th><th>L</th><th>T</th><th class="hide-sm">PCT</th><th class="hide-sm">DIV</th><th>STRK</th></tr></thead>
+          <tbody>${rows.map((e, i) => `
+            <tr class="${i === 0 ? "leader" : ""}">
+              <td>${teamCell(e, statOf(e, "playoffSeed")?.displayValue)}</td>
+              <td>${statText(e, "wins")}</td><td>${statText(e, "losses")}</td><td>${statText(e, "ties")}</td>
+              <td class="hide-sm">${statText(e, "winPercent")}</td><td class="hide-sm">${statText(e, "divisionRecord")}</td>
+              <td>${statText(e, "streak")}</td>
+            </tr>`).join("")}
+          </tbody>
+        </table>`;
+    }).join("");
+    return `<div class="standings-conf"><h4>${esc(conf.abbreviation || conf.name)}</h4>${divs}</div>`;
+  });
+  return `<div class="standings-confs">${confs.join("")}</div>
+    <div class="standings-key">Bold = leading the division. The small number is the team's current playoff seed in its conference (top 7 make the playoffs).</div>`;
+}
+
+function renderNbaStandings(data) {
+  const confs = [...(data.children || [])]
+    .sort((a, b) => /west/i.test(b.name) - /west/i.test(a.name)) // Western first
+    .map(conf => {
+      const rows = [...(conf.standings?.entries || [])].sort((a, b) => statVal(a, "playoffSeed") - statVal(b, "playoffSeed"));
+      return `
+        <div class="standings-conf">
+          <h4>${esc(conf.name)}</h4>
+          <table class="standings-table">
+            <thead><tr><th>Team</th><th>W</th><th>L</th><th class="hide-sm">PCT</th><th>GB</th><th class="hide-sm">L10</th><th>STRK</th></tr></thead>
+            <tbody>${rows.map((e, i) => `
+              <tr class="${i === 5 ? "cut-playoff" : i === 9 ? "cut-playin" : ""}">
+                <td>${teamCell(e, i + 1)}</td>
+                <td>${statText(e, "wins")}</td><td>${statText(e, "losses")}</td>
+                <td class="hide-sm">${statText(e, "winPercent")}</td><td>${statText(e, "gamesBehind")}</td>
+                <td class="hide-sm">${statText(e, "Last Ten Games")}</td><td>${statText(e, "streak")}</td>
+              </tr>`).join("")}
+            </tbody>
+          </table>
+        </div>`;
+    });
+  return `<div class="standings-confs">${confs.join("")}</div>
+    <div class="standings-key">Solid line: seeds 1 to 6 go straight to the playoffs. Dashed line: seeds 7 to 10 go to the play-in.</div>`;
+}
+
+// Boxing, UFC, athletics, IPL and International have no league table, so nothing shows for them.
+const STANDINGS = {
+  nfl: { url: `${ESPN_STANDINGS}/football/nfl/standings?level=3`, render: renderNflStandings },
+  nba: { url: `${ESPN_STANDINGS}/basketball/nba/standings`, render: renderNbaStandings },
+};
+const standingsCache = {};
+
+function buildStandingsShell() {
+  const el = document.createElement("section");
+  el.className = "standings-section";
+  el.id = "standings";
+  el.style.display = "none";
+  document.getElementById("app").appendChild(el);
+}
+
+async function showStandings(id) {
+  const el = document.getElementById("standings");
+  const cfg = STANDINGS[id];
+  if (!cfg) { el.style.display = "none"; el.innerHTML = ""; return; }
+  const sport = sportById(id);
+  const head = `<div class="standings-head" style="background:${sport.color}">${esc(sport.name)} Standings<span class="sub">Live from ESPN</span></div>`;
+  el.style.display = "";
+  el.innerHTML = head + `<div class="loading">Loading standings…</div>`;
+  try {
+    if (!standingsCache[id]) {
+      const res = await fetch(cfg.url);
+      if (!res.ok) throw new Error(res.status);
+      standingsCache[id] = await res.json();
+    }
+    if (currentSportFilter !== id) return;
+    el.innerHTML = head + cfg.render(standingsCache[id]);
+  } catch (err) {
+    if (currentSportFilter === id) el.innerHTML = head + `<div class="loading">Standings are unavailable right now. Try refreshing in a minute.</div>`;
+  }
+}
+
+/* ---------- Sport tabs ---------- */
 
 let currentSportFilter = "all";
 
@@ -1501,9 +1697,13 @@ function applySportFilter(id) {
   document.querySelectorAll(".sport-section").forEach(sec => {
     sec.style.display = (id === "all" || sec.id === `sport-${id}`) ? "" : "none";
   });
-  document.querySelectorAll(".sport-nav-item").forEach(btn => {
+  document.querySelectorAll("#sport-nav .sport-nav-item").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.target === id);
   });
+  // Cricket / Football / Rugby / All Sports sub-tabs only belong to the International tab.
+  const subNav = document.getElementById("international-sub-nav");
+  if (subNav) subNav.style.display = id === "international" ? "" : "none";
+  showStandings(id);
   document.getElementById("sport-nav").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -1559,7 +1759,7 @@ function applyIntFilter(tag) {
   cards.forEach(card => {
     const show = tag === "all" || card.dataset.tag === tag;
     card.style.display = show ? "" : "none";
-    if (show) visibleCount++;
+    if (show && !card.classList.contains("past")) visibleCount++;
   });
   document.querySelectorAll("#international-sub-nav .sport-nav-item").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.target === tag);
@@ -1572,6 +1772,7 @@ function buildInternationalSubNav() {
   const nav = document.createElement("div");
   nav.className = "sport-nav";
   nav.id = "international-sub-nav";
+  if (currentSportFilter !== "international") nav.style.display = "none";
 
   const tagButtons = INT_SUB_NAV_ITEMS.map(item => `
     <button type="button" class="sport-nav-item" data-target="${item.tag}" style="--accent:${item.color}">
@@ -1597,7 +1798,26 @@ function buildInternationalSubNav() {
   });
 }
 
-function renderSection(sport, events) {
+/* ---------- Sport sections ---------- */
+
+function eventCardHtml(e) {
+  return `
+    ${e.sportTag ? `<span class="sport-tag" style="background:${SPORT_TAG_COLOR[e.sportTag] || "var(--international)"}">${SPORT_TAG_EMOJI[e.sportTag] ? SPORT_TAG_EMOJI[e.sportTag] + " " : ""}${e.sportTag}</span>` : ""}
+    ${e.womens ? `<span class="womens-tag">Womens</span>` : ""}
+    <div class="matchup">${esc(e.matchup)}</div>
+    ${resultHtml(e)}
+    <div class="meta">
+      <span>📅 ${e.date ? fmtDate(e.date) : "Date TBC"}</span>
+      ${e.time && !e.result ? `<span>🕒 ${esc(e.time)}</span>` : ""}
+    </div>
+    <div class="venue">📍 ${esc(e.venue || "Venue TBA")}</div>
+    ${e.note ? `<div class="venue">${esc(e.note)}</div>` : ""}
+  `;
+}
+
+// opts.upcomingDays: only list this many days ahead (NBA, which plays nearly every night).
+// opts.intro: a short line shown at the top of the list.
+function renderSection(sport, events, opts = {}) {
   const section = document.createElement("section");
   section.className = "sport-section";
   section.id = `sport-${sport.id}`;
@@ -1608,38 +1828,41 @@ function renderSection(sport, events) {
   const icon = sport.logo
     ? `<img class="logo bg-chip" src="${sport.logo}" alt="${sport.name} logo">`
     : `<span>${sport.emoji}</span>`;
-  header.innerHTML = `${icon}<span>${sport.name}</span><span class="badge">${events.length} upcoming</span>`;
+  header.innerHTML = `${icon}<span>${sport.name}</span><span class="badge"></span>`;
   section.appendChild(header);
 
   const grid = document.createElement("div");
   grid.className = "events-grid";
 
-  const filtered = events.filter(e => inWindow(e.date)).sort((a, b) => {
+  const usable = events.filter(e => !hiddenForSport(sport, e));
+  const byDate = (a, b) => {
     if (!a.date) return 1;
     if (!b.date) return -1;
-    return new Date(a.date) - new Date(b.date);
+    return a.date.localeCompare(b.date) || (a.sortKey || "").localeCompare(b.sortKey || "");
+  };
+  const listEnd = opts.upcomingDays ? ymd(addDays(opts.upcomingDays)) : HORIZON_STR;
+  const recent = usable.filter(e => e.date && e.result && e.date >= RECENT_START_STR && e.date < TODAY_STR).sort(byDate);
+  const upcoming = usable.filter(e => inWindow(e.date) && (!e.date || e.date <= listEnd)).sort(byDate);
+
+  if (opts.intro) grid.insertAdjacentHTML("beforeend", `<div class="empty-note">${esc(opts.intro)}</div>`);
+
+  const addCards = (list, past) => list.forEach(e => {
+    const card = document.createElement("div");
+    card.className = past ? "event-card past" : "event-card";
+    if (e.sportTag) card.dataset.tag = e.sportTag;
+    card.innerHTML = eventCardHtml(e);
+    grid.appendChild(card);
   });
 
-  if (filtered.length === 0) {
-    grid.innerHTML = `<div class="empty-note">No ${sport.name} events found in the next ${HORIZON_DAYS} days.</div>`;
+  if (recent.length) {
+    grid.insertAdjacentHTML("beforeend", `<div class="section-subhead">Recent results</div>`);
+    addCards(recent, true);
+    grid.insertAdjacentHTML("beforeend", `<div class="section-subhead">Upcoming</div>`);
+  }
+  if (upcoming.length === 0) {
+    grid.insertAdjacentHTML("beforeend", `<div class="empty-note">No ${esc(sport.name)} events found in the next ${HORIZON_DAYS} days.</div>`);
   } else {
-    filtered.forEach(e => {
-      const card = document.createElement("div");
-      card.className = "event-card";
-      if (e.sportTag) card.dataset.tag = e.sportTag;
-      card.innerHTML = `
-        ${e.sportTag ? `<span class="sport-tag" style="background:${SPORT_TAG_COLOR[e.sportTag] || "var(--international)"}">${SPORT_TAG_EMOJI[e.sportTag] ? SPORT_TAG_EMOJI[e.sportTag] + " " : ""}${e.sportTag}</span>` : ""}
-        ${e.womens ? `<span class="womens-tag">Womens</span>` : ""}
-        <div class="matchup">${e.matchup}</div>
-        <div class="meta">
-          <span>📅 ${e.date ? fmtDate(e.date) : "Date TBC"}</span>
-          ${e.time ? `<span>🕒 ${e.time}</span>` : ""}
-        </div>
-        <div class="venue">📍 ${e.venue || "Venue TBA"}</div>
-        ${e.note ? `<div class="venue">${e.note}</div>` : ""}
-      `;
-      grid.appendChild(card);
-    });
+    addCards(upcoming, false);
   }
 
   section.appendChild(grid);
@@ -1649,10 +1872,9 @@ function renderSection(sport, events) {
     section.style.display = "none";
   }
 
-  // header badge count should reflect filtered count, not raw curated count
-  header.querySelector(".badge").textContent = `${filtered.length} upcoming`;
+  header.querySelector(".badge").textContent = `${upcoming.filter(e => e.date).length} upcoming`;
 
-  trackEvents(sport, filtered);
+  trackEvents(sport, usable);
 }
 
 async function fetchLiveAPISports(url) {
@@ -1686,49 +1908,39 @@ async function buildLiveSection(sport, apiUrl, mapFn, filterFn) {
 
 async function init() {
   document.getElementById("range-label").textContent =
-    `${fmtDate(NOW.toISOString().slice(0,10))} to ${fmtDate(HORIZON_END.toISOString().slice(0,10))}`;
+    `${fmtDate(TODAY_STR)} to ${fmtDate(HORIZON_STR)}`;
 
-  const todayStr = NOW.toISOString().slice(0, 10);
+  // Start the ESPN downloads straight away; sections are still added in a fixed order below.
+  const nbaListDates = Array.from({ length: RECENT_DAYS + 8 }, (_, i) => ymd(addDays(i - RECENT_DAYS)));
+  const nbaPromise = fetchNbaDates(nbaListDates);
+  const nflPromise = loadNflSeason();
 
   buildSportNav();
   buildDayModal();
+  buildStandingsShell();
   buildCalendarShell();
 
-  // Athletics, Boxing, IPL Cricket, Premier League have no API-Sports coverage on this plan - always curated.
+  // Athletics, Boxing and IPL Cricket have no live feed - always curated.
   renderSection(sportById("athletics"), CURATED.athletics);
   renderSection(sportById("boxing"), CURATED.boxing);
   renderSection(sportById("ipl"), CURATED.ipl);
-  renderSection(sportById("epl"), CURATED.epl);
 
-  await buildLiveSection(
-    sportById("nba"),
-    `https://v2.nba.api-sports.io/games?date=${todayStr}`,
-    g => ({
-      date: g.date?.start?.slice(0, 10),
-      time: g.date?.start?.slice(11, 16),
-      matchup: `${g.teams?.visitors?.name} vs ${g.teams?.home?.name}`,
-      venue: g.arena?.name,
-    })
-  );
+  const nbaEvents = await nbaPromise;
+  if (nbaEvents.length) {
+    renderSection(sportById("nba"), nbaEvents, {
+      upcomingDays: 7,
+      intro: "The NBA plays almost every night, so this list shows the last week's scores and the next 7 days. The calendar has every game.",
+    });
+  } else {
+    renderSection(sportById("nba"), CURATED.nba);
+  }
 
-  await buildLiveSection(
-    sportById("nfl"),
-    `https://v1.american-football.api-sports.io/games?date=${todayStr}&league=1`,
-    g => ({
-      date: g.game?.date?.date,
-      time: g.game?.date?.time,
-      matchup: `${g.teams?.away?.name} vs ${g.teams?.home?.name}`,
-      venue: g.game?.venue?.name,
-    }),
-    // Belt-and-braces: the ?league=1 query param scopes this to the NFL, but
-    // some tiers/responses have ignored the param and returned NCAA/CFL/XFL
-    // games too, so also filter client-side on the league name/id.
-    g => g.league?.id === 1 || g.league?.name === "NFL"
-  );
+  const nflEvents = await nflPromise;
+  renderSection(sportById("nfl"), nflEvents.length ? nflEvents : CURATED.nfl);
 
   await buildLiveSection(
     sportById("ufc"),
-    `https://v1.mma.api-sports.io/fights?date=${todayStr}`,
+    `https://v1.mma.api-sports.io/fights?date=${TODAY_STR}`,
     f => ({
       date: f.date?.slice(0, 10),
       time: f.date?.slice(11, 16),
