@@ -14,16 +14,16 @@
     --text: #e9edf5;
     --muted: #8a93a6;
     --border: #232a3b;
-    --nfl: #d7263d;
-    --nba: #f08a24;
-    --boxing: #c9b037;
-    --ufc: #d81b60;
-    --ipl: #8e44ad;
-    --athletics: #2e86de;
-    --international: #5c6bc0;
-    --tag-cricket: #16a085;
-    --tag-football: #2ecc71;
-    --tag-rugby: #a0522d;
+    --nfl: #f0656f;
+    --nba: #f5a35c;
+    --boxing: #e6c15a;
+    --ufc: #e874a8;
+    --ipl: #a990f5;
+    --athletics: #6cb2f5;
+    --international: #8d97f2;
+    --tag-cricket: #45c9a8;
+    --tag-football: #6bd696;
+    --tag-rugby: #d9966a;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -86,13 +86,18 @@
     padding: 18px 22px;
     font-weight: 700;
     font-size: 1.2rem;
-    color: #0b0e14;
+    color: var(--text);
+    background: linear-gradient(90deg, color-mix(in srgb, var(--c) 22%, var(--panel)) 0%, var(--panel) 75%);
+    border-bottom: 1px solid color-mix(in srgb, var(--c) 30%, var(--border));
+    box-shadow: inset 4px 0 0 var(--c);
   }
   .sport-header .badge {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
-    background: rgba(11,14,20,0.25);
+    color: var(--c);
+    background: color-mix(in srgb, var(--c) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
     padding: 4px 11px;
     border-radius: 20px;
     margin-left: auto;
@@ -158,9 +163,10 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #0b0e14;
-    background: var(--international);
-    padding: 4px 10px;
+    color: var(--c);
+    background: color-mix(in srgb, var(--c) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
+    padding: 3px 10px;
     border-radius: 20px;
     margin-bottom: 1px;
   }
@@ -361,10 +367,12 @@
   }
   .cal-event-pill {
     border-radius: 6px;
-    padding: 4px 6px;
-    color: #0b0e14;
+    padding: 4px 6px 4px 8px;
+    color: var(--text);
+    background: color-mix(in srgb, var(--c) 13%, var(--panel-2));
+    box-shadow: inset 3px 0 0 var(--c);
     font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.25;
     flex-shrink: 0;
   }
   .cal-event-pill .pill-name {
@@ -373,13 +381,22 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     font-size: 0.72rem;
-    font-weight: 700;
+    font-weight: 600;
+  }
+  .cal-event-pill .pill-sport {
+    color: var(--c);
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.62rem;
+    letter-spacing: 0.4px;
+    margin-right: 3px;
   }
   .cal-event-pill .pill-meta {
     display: block;
+    margin-top: 2px;
     font-size: 0.62rem;
     font-weight: 500;
-    opacity: 0.85;
+    color: var(--muted);
   }
   .cal-more {
     font-size: 0.72rem;
@@ -521,10 +538,13 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #0b0e14;
-    padding: 3px 9px;
+    color: var(--c);
+    background: color-mix(in srgb, var(--c) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
+    padding: 2px 9px;
     border-radius: 20px;
   }
+  .day-modal-event { box-shadow: inset 3px 0 0 var(--c, transparent); }
   .day-modal-event .dm-matchup { font-weight: 700; font-size: 1.05rem; line-height: 1.35; }
   .day-modal-event .dm-meta {
     display: flex;
@@ -601,9 +621,14 @@
     padding: 16px 22px;
     font-weight: 700;
     font-size: 1.15rem;
-    color: #0b0e14;
+    color: var(--text);
+    background: linear-gradient(90deg, color-mix(in srgb, var(--c) 22%, var(--panel)) 0%, var(--panel) 75%);
+    border-bottom: 1px solid color-mix(in srgb, var(--c) 30%, var(--border));
+    box-shadow: inset 4px 0 0 var(--c);
   }
-  .standings-head .sub { font-size: 0.8rem; font-weight: 600; opacity: 0.75; margin-left: auto; }
+  .standings-head .sub { font-size: 0.75rem; font-weight: 600; color: var(--c); margin-left: auto; }
+  .standings-conf h4 { color: var(--text); }
+  .standings-table caption { color: var(--c, var(--muted)); }
   .standings-confs {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1218,6 +1243,19 @@ const ET_TZ = "America/New_York";
 const ESPN_SITE = "https://site.api.espn.com/apis/site/v2/sports";
 const ESPN_STANDINGS = "https://site.api.espn.com/apis/v2/sports";
 
+// ESPN is fetched through this site's own /api/espn (api/espn.js on Vercel, scripts/serve.py locally),
+// so browser blockers and ESPN's bot filter can't stop it. Falls back to calling ESPN directly.
+async function espnFetch(url) {
+  if (location.protocol.startsWith("http")) {
+    try {
+      const path = url.replace("https://site.api.espn.com/", "");
+      const res = await fetch(`/api/espn?path=${encodeURIComponent(path)}`);
+      if (res.ok) return res;
+    } catch (err) { /* fall through to direct */ }
+  }
+  return fetch(url);
+}
+
 const pad2 = n => String(n).padStart(2, "0");
 function ymd(d) { return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`; }
 function addDays(n) { return new Date(NOW.getFullYear(), NOW.getMonth(), NOW.getDate() + n); }
@@ -1439,8 +1477,8 @@ function openDayModal(dateStr) {
   const label = dateObj.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
   document.getElementById("day-modal-title").textContent = label;
   document.getElementById("day-modal-body").innerHTML = events.map(e => `
-    <div class="day-modal-event">
-      <span class="dm-sport" style="background:${e.color}">${esc(e.name)}</span>
+    <div class="day-modal-event" style="--c:${e.color}">
+      <span class="dm-sport">${esc(e.name)}</span>
       <div class="dm-matchup">${esc(e.matchup)}</div>
       ${resultHtml(e)}
       <div class="dm-meta">${e.time && !e.result ? `<span>🕒 ${esc(e.time)}</span>` : ""}</div>
@@ -1488,8 +1526,8 @@ function renderCalendarMonth() {
     const pills = visible.map(e => {
       const meta = pillMeta(e);
       return `
-      <div class="cal-event-pill" style="background:${e.color}">
-        <span class="pill-name">${esc(e.name)}: ${esc(e.matchup)}</span>
+      <div class="cal-event-pill" style="--c:${e.color}">
+        <span class="pill-name"><span class="pill-sport">${esc(e.name)}</span>${esc(e.matchup)}</span>
         ${meta ? `<span class="pill-meta">${esc(meta)}</span>` : ""}
       </div>`;
     }).join("") + (hiddenCount > 0 ? `<div class="cal-more">+${hiddenCount} more</div>` : "");
@@ -1557,7 +1595,7 @@ function espnToEvent(ev) {
 
 async function espnScoreboard(path, query) {
   try {
-    const res = await fetch(`${ESPN_SITE}/${path}/scoreboard?${query}`);
+    const res = await espnFetch(`${ESPN_SITE}/${path}/scoreboard?${query}`);
     if (!res.ok) return [];
     const data = await res.json();
     return (data.events || []).map(espnToEvent).filter(Boolean);
@@ -1672,12 +1710,12 @@ async function showStandings(id) {
   const cfg = STANDINGS[id];
   if (!cfg) { el.style.display = "none"; el.innerHTML = ""; return; }
   const sport = sportById(id);
-  const head = `<div class="standings-head" style="background:${sport.color}">${esc(sport.name)} Standings<span class="sub">Live from ESPN</span></div>`;
+  const head = `<div class="standings-head" style="--c:${sport.color}">${esc(sport.name)} Standings<span class="sub">Live from ESPN</span></div>`;
   el.style.display = "";
   el.innerHTML = head + `<div class="loading">Loading standings…</div>`;
   try {
     if (!standingsCache[id]) {
-      const res = await fetch(cfg.url);
+      const res = await espnFetch(cfg.url);
       if (!res.ok) throw new Error(res.status);
       standingsCache[id] = await res.json();
     }
@@ -1802,7 +1840,7 @@ function buildInternationalSubNav() {
 
 function eventCardHtml(e) {
   return `
-    ${e.sportTag ? `<span class="sport-tag" style="background:${SPORT_TAG_COLOR[e.sportTag] || "var(--international)"}">${SPORT_TAG_EMOJI[e.sportTag] ? SPORT_TAG_EMOJI[e.sportTag] + " " : ""}${e.sportTag}</span>` : ""}
+    ${e.sportTag ? `<span class="sport-tag" style="--c:${SPORT_TAG_COLOR[e.sportTag] || "var(--international)"}">${SPORT_TAG_EMOJI[e.sportTag] ? SPORT_TAG_EMOJI[e.sportTag] + " " : ""}${e.sportTag}</span>` : ""}
     ${e.womens ? `<span class="womens-tag">Womens</span>` : ""}
     <div class="matchup">${esc(e.matchup)}</div>
     ${resultHtml(e)}
@@ -1824,7 +1862,7 @@ function renderSection(sport, events, opts = {}) {
 
   const header = document.createElement("div");
   header.className = "sport-header";
-  header.style.background = sport.color;
+  header.style.setProperty("--c", sport.color);
   const icon = sport.logo
     ? `<img class="logo bg-chip" src="${sport.logo}" alt="${sport.name} logo">`
     : `<span>${sport.emoji}</span>`;

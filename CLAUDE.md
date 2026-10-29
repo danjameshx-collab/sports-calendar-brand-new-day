@@ -34,4 +34,4 @@ is renamed.
   (e.g. `result: "Canelo won by unanimous decision"`) and keep it for 7 days so it shows under
   "Recent results" and on the calendar. Past events stay visible on the calendar back to the start of last month.
 - The International sub-tabs (Cricket / Football / Rugby / All Sports) only show when the International tab is selected.
-- ESPN blocks headless browsers, so headless Chrome tests will show "Standings are unavailable". Real browsers are fine.
+- The page reads ESPN through its own `/api/espn` (Vercel function `api/espn.js`; locally `python scripts/serve.py` on http://localhost:8795/), because some browsers/blockers stopped direct ESPN calls. ESPN rejects user agents containing a URL, so keep the plain `sports-calendar/1.0`.
